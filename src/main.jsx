@@ -1,10 +1,15 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
+// src/main.jsx
+import React from 'react'
+import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
+import './index.css'
+// ১. ইম্পোর্ট পাথটি পরিবর্তন করুন
+import AuthProvider from './context/AuthProvider.jsx' // <-- './context/AuthContext.jsx' এর বদলে
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <AuthProvider> {/* <-- এটি আগের মতোই থাকবে */}
+      <App />
+    </AuthProvider>
+  </React.StrictMode>,
 )
