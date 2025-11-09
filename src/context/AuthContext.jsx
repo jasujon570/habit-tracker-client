@@ -1,5 +1,2 @@
-// src/context/AuthContext.jsx
-import { createContext } from 'react';
-
-// এই ফাইলটি শুধু Context অবজেক্টটি তৈরি এবং export করে
+import { createContext } from "react";
 export const AuthContext = createContext(null);

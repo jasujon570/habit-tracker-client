@@ -1,4 +1,3 @@
-// src/context/AuthProvider.jsx
 import { useEffect, useState } from 'react';
 import { 
     GoogleAuthProvider, 
@@ -9,12 +8,12 @@ import {
     signOut, 
     updateProfile 
 } from 'firebase/auth';
-import auth from '../firebase/firebase.config';
-import { AuthContext } from './AuthContext'; // <-- AuthContext.jsx থেকে ইম্পোর্ট করুন
+import auth from '../firebase/firebase.config.js';
+import { AuthContext } from './AuthContext'; 
 
 const googleProvider = new GoogleAuthProvider();
 
-// AuthProvider কম্পোনেন্ট
+
 const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
