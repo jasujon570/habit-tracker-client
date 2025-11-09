@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
-import registerImage from '../../assets/photo1.svg'
-
+import registerImage from "../../assets/photo1.svg";
 
 const Register = () => {
   const { createUser, updateUserProfile } = useAuth();
@@ -21,10 +20,35 @@ const Register = () => {
   const onSubmit = (data) => {
     createUser(data.email, data.password)
       .then((result) => {
+        console.log(result);
+
         updateUserProfile(data.name, data.photoURL)
           .then(() => {
-            toast.success("Registration Successful!");
-            navigate("/");
+            const userInfo = {
+              name: data.name,
+              email: data.email,
+              photoURL: data.photoURL,
+            };
+
+            fetch("http://localhost:5000/users", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(userInfo),
+            })
+              .then((res) => res.json())
+              .then((dbData) => {
+                if (
+                  dbData.insertedId ||
+                  dbData.message === "User already exists"
+                ) {
+                  toast.success("Registration Successful!");
+                  navigate("/");
+                }
+              })
+              .catch((dbError) => {
+                console.error(dbError);
+                toast.error("Failed to save user to database.");
+              });
           })
           .catch((error) => toast.error(error.message));
       })
@@ -39,7 +63,6 @@ const Register = () => {
             <h1 className="text-3xl font-bold text-center text-primary mb-4">
               Create an Account!
             </h1>
-
 
             <div className="form-control">
               <label className="label">
@@ -58,7 +81,6 @@ const Register = () => {
               )}
             </div>
 
-        
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Photo URL</span>
@@ -76,7 +98,6 @@ const Register = () => {
               )}
             </div>
 
-      
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -94,7 +115,6 @@ const Register = () => {
               )}
             </div>
 
-        
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Password</span>
@@ -109,7 +129,7 @@ const Register = () => {
                 placeholder="password"
                 className="input input-bordered w-full"
               />
-             
+
               <div className="text-red-600 mt-1 text-xs">
                 {errors.password?.type === "required" && (
                   <span>Password is required</span>
@@ -123,7 +143,6 @@ const Register = () => {
               </div>
             </div>
 
-         
             <div className="form-control mt-6">
               <button type="submit" className="btn btn-primary">
                 Register
@@ -139,10 +158,9 @@ const Register = () => {
           </p>
         </div>
 
-        
         <div className="text-center lg:text-left w-full lg:w-1/2 p-8">
           <img
-            src={registerImage} 
+            src={registerImage}
             alt="Habit Building"
             className="w-full max-w-md mx-auto"
           />

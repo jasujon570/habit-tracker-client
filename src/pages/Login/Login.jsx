@@ -35,10 +35,27 @@ const Login = () => {
     googleSignIn()
       .then((result) => {
         const user = result.user;
-        console.log(user);
+        const userInfo = {
+          name: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+        };
 
-        toast.success("Login Successful!");
-        navigate(from, { replace: true });
+        fetch("http://localhost:5000/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userInfo),
+        })
+          .then((res) => res.json())
+          .then((dbData) => {
+            console.log(dbData);
+            toast.success("Login Successful!");
+            navigate(from, { replace: true });
+          })
+          .catch((dbError) => {
+            console.error(dbError);
+            toast.error("Failed to process Google Sign-in.");
+          });
       })
       .catch((error) => {
         console.error(error);
