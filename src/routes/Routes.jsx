@@ -6,6 +6,7 @@ import Register from "../pages/Register/Register";
 import AddHabit from "../pages/AddHabit/AddHabit";
 import PrivateRoute from "./PrivateRoute";
 import MyHabits from "../pages/MyHabits/MyHabits";
+import BrowsePublicHabits from "../pages/BrowsePublicHabits/BrowsePublicHabits";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
             <MyHabits />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/browse-public",
+        element: <BrowsePublicHabits />,
       },
     ],
   },

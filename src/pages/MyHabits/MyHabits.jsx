@@ -4,14 +4,74 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import Lottie from "lottie-react";
+import successAnimation from "./success.json";
+
+const getNormalizedDate = (date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+const calculateStreak = (completionHistory) => {
+  if (!completionHistory || completionHistory.length === 0) {
+    return 0;
+  }
+
+  const uniqueDates = new Set(
+    completionHistory.map((entry) => getNormalizedDate(entry.date).getTime())
+  );
+
+  const sortedDates = Array.from(uniqueDates).sort((a, b) => b - a);
+
+  let currentStreak = 0;
+  const today = getNormalizedDate(new Date()).getTime();
+  const yesterday = getNormalizedDate(
+    new Date(today - 24 * 60 * 60 * 1000)
+  ).getTime();
+
+  if (sortedDates[0] === today) {
+    currentStreak = 1;
+  } else if (sortedDates[0] === yesterday) {
+    currentStreak = 1;
+  } else {
+    return 0;
+  }
+
+  let currentDay = sortedDates[0];
+  for (let i = 1; i < sortedDates.length; i++) {
+    const nextDay = sortedDates[i];
+    const expectedPreviousDay = getNormalizedDate(
+      new Date(currentDay - 24 * 60 * 60 * 1000)
+    ).getTime();
+
+    if (nextDay === expectedPreviousDay) {
+      currentStreak++;
+      currentDay = nextDay;
+    } else {
+      break;
+    }
+  }
+  return currentStreak;
+};
+
+const isCompletedToday = (completionHistory) => {
+  if (!completionHistory || completionHistory.length === 0) {
+    return false;
+  }
+  const today = getNormalizedDate(new Date()).getTime();
+  return completionHistory.some((entry) => {
+    const entryDate = getNormalizedDate(entry.date).getTime();
+    return entryDate === today;
+  });
+};
+
 const MyHabits = () => {
   const { user, loading: authLoading } = useAuth();
   const [myHabits, setMyHabits] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [selectedHabit, setSelectedHabit] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const { register, handleSubmit, setValue } = useForm();
 
   const fetchHabits = useCallback(() => {
@@ -44,14 +104,11 @@ const MyHabits = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/habits/${id}`, {
-          method: "DELETE",
-        })
+        fetch(`http://localhost:5000/habits/${id}`, { method: "DELETE" })
           .then((res) => res.json())
           .then((data) => {
             if (data.deletedCount > 0) {
               Swal.fire("Deleted!", "Your habit has been deleted.", "success");
-
               setMyHabits(myHabits.filter((habit) => habit._id !== id));
             }
           });
@@ -86,6 +143,43 @@ const MyHabits = () => {
         }
       })
       .catch((err) => toast.error(err.message));
+  };
+
+  const handleMarkComplete = (id) => {
+    fetch(`http://localhost:5000/habits/complete/${id}`, {
+      method: "PATCH",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.modifiedCount > 0) {
+          Swal.fire({
+            title: "Great Job!",
+            html: '<div class="h-40">Loading...</div>',
+            timer: 2000,
+            showConfirmButton: false,
+            didOpen: () => {
+              const lottieContainer =
+                Swal.getHtmlContainer().querySelector("div");
+              const lottieInstance = Lottie.render({
+                container: lottieContainer,
+                renderer: "svg",
+                loop: false,
+                autoplay: true,
+                animationData: successAnimation,
+              });
+
+              lottieContainer.style.height = "auto";
+              lottieContainer.innerHTML = "";
+              lottieContainer.appendChild(lottieInstance.wrapper);
+            },
+          });
+          fetchHabits();
+        } else if (data.message === "Habit already completed today.") {
+          toast("You already completed this today!", { icon: "👏" });
+        } else {
+          toast.error("Could not mark as complete.");
+        }
+      });
   };
 
   if (loading || authLoading) {
@@ -125,34 +219,45 @@ const MyHabits = () => {
             </tr>
           </thead>
           <tbody>
-            {myHabits.map((habit, index) => (
-              <tr key={habit._id} className="hover">
-                <th>{index + 1}</th>
-                <td>{habit.title}</td>
-                <td>{habit.category}</td>
-                <td>
-                  <span className="badge badge-primary badge-lg">0 days</span>
-                </td>
-                <td>{new Date(habit.createdAt).toLocaleDateString()}</td>
-                <td>
-                  <button
-                    onClick={() => openUpdateModal(habit)}
-                    className="btn btn-ghost btn-xs"
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={() => handleDelete(habit._id)}
-                    className="btn btn-ghost btn-xs text-red-600"
-                  >
-                    Delete
-                  </button>
-                  <button className="btn btn-primary btn-xs ml-2">
-                    Mark Complete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {myHabits.map((habit, index) => {
+              const streak = calculateStreak(habit.completionHistory);
+              const completedToday = isCompletedToday(habit.completionHistory);
+
+              return (
+                <tr key={habit._id} className="hover">
+                  <th>{index + 1}</th>
+                  <td>{habit.title}</td>
+                  <td>{habit.category}</td>
+                  <td>
+                    <span className="badge badge-primary badge-lg">
+                      {streak} days
+                    </span>
+                  </td>
+                  <td>{new Date(habit.createdAt).toLocaleDateString()}</td>
+                  <td>
+                    <button
+                      onClick={() => openUpdateModal(habit)}
+                      className="btn btn-ghost btn-xs"
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => handleDelete(habit._id)}
+                      className="btn btn-ghost btn-xs text-red-600"
+                    >
+                      Delete
+                    </button>
+                    <button
+                      onClick={() => handleMarkComplete(habit._id)}
+                      className="btn btn-primary btn-xs ml-2"
+                      disabled={completedToday}
+                    >
+                      {completedToday ? "Completed" : "Mark Complete"}
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
@@ -163,7 +268,6 @@ const MyHabits = () => {
             <h3 className="font-bold text-2xl mb-4">
               Update Habit: {selectedHabit.title}
             </h3>
-
             <form onSubmit={handleSubmit(onUpdateSubmit)} className="space-y-4">
               <div className="form-control">
                 <label className="label">
@@ -221,7 +325,6 @@ const MyHabits = () => {
                   />
                 </div>
               </div>
-
               <div className="modal-action mt-6">
                 <button
                   type="button"
