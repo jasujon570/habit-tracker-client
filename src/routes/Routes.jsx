@@ -5,6 +5,7 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import AddHabit from "../pages/AddHabit/AddHabit";
 import PrivateRoute from "./PrivateRoute";
+import MyHabits from "../pages/MyHabits/MyHabits";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <AddHabit />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/my-habits",
+        element: (
+          <PrivateRoute>
+            <MyHabits />
           </PrivateRoute>
         ),
       },
