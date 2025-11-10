@@ -4,8 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion"; 
-
+import { motion } from "framer-motion";
 
 const sliderSettings = {
   dots: true,
@@ -16,17 +15,14 @@ const sliderSettings = {
   autoplay: true,
 };
 
-
 const sectionVariant = {
   hidden: {
-   
     opacity: 0,
-    y: 50, 
+    y: 50,
   },
   visible: {
-  
     opacity: 1,
-    y: 0, 
+    y: 0,
     transition: {
       duration: 0.6,
       ease: "easeOut",
@@ -54,13 +50,11 @@ const Home = () => {
 
   return (
     <div>
-     
       <div className="w-full max-w-6xl mx-auto my-10 p-4">
         <Slider {...sliderSettings}>
-         
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img
-              src="https://i.ibb.co/XzB1mYp/slider-1.jpg"
+              src="https://i.postimg.cc/3x7M1sjf/a.webp"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
@@ -78,10 +72,10 @@ const Home = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img
-              src="https://i.ibb.co/GvxYqPS/slider-2.jpg"
+              src="https://i.postimg.cc/sx9mgNBv/2.jpg"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
@@ -98,10 +92,10 @@ const Home = () => {
               </div>
             </div>
           </div>
-        
+
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img
-              src="https://i.ibb.co/3sN6FqN/slider-3.jpg"
+              src="https://i.postimg.cc/D0BGDkJr/3.jpg"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
@@ -121,13 +115,12 @@ const Home = () => {
         </Slider>
       </div>
 
-     
       <motion.div
         className="max-w-6xl mx-auto p-4 my-16"
         variants={sectionVariant}
-        initial="hidden" 
-        whileInView="visible" 
-        viewport={{ once: true }} 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
       >
         <h2 className="text-4xl font-bold text-center mb-10">
           Featured Habits
@@ -172,7 +165,6 @@ const Home = () => {
         )}
       </motion.div>
 
-    
       <motion.div
         className="max-w-6xl mx-auto p-4 my-16 bg-base-200 rounded-lg py-10"
         variants={sectionVariant}
@@ -184,7 +176,6 @@ const Home = () => {
           Why Build Habits?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-      
           <div className="card bg-base-100 shadow-lg p-6">
             <div className="text-primary mx-auto mb-4">
               <svg
@@ -205,7 +196,7 @@ const Home = () => {
             <h3 className="text-xl font-semibold mb-2">Boosts Productivity</h3>
             <p>Consistent actions lead to massive results over time.</p>
           </div>
-       
+
           <div className="card bg-base-100 shadow-lg p-6">
             <div className="text-primary mx-auto mb-4">
               <svg
@@ -226,7 +217,7 @@ const Home = () => {
             <h3 className="text-xl font-semibold mb-2">Improves Focus</h3>
             <p>Reduce distractions by automating daily decisions.</p>
           </div>
-     
+
           <div className="card bg-base-100 shadow-lg p-6">
             <div className="text-primary mx-auto mb-4">
               <svg
@@ -247,7 +238,7 @@ const Home = () => {
             <h3 className="text-xl font-semibold mb-2">Reduces Stress</h3>
             <p>A predictable routine brings peace and order to your life.</p>
           </div>
-         
+
           <div className="card bg-base-100 shadow-lg p-6">
             <div className="text-primary mx-auto mb-4">
               <svg
@@ -270,8 +261,6 @@ const Home = () => {
           </div>
         </div>
       </motion.div>
-
-      
     </div>
   );
 };

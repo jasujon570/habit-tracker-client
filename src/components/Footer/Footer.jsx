@@ -1,9 +1,6 @@
-import React from "react";
-import { Link } from "react-router-dom";
-
 const Footer = () => {
   return (
-    <footer className="footer p-10 bg-base-200 text-base-content mt-10">
+    <footer className="footer flex flex-col lg:flex-row lg:justify-between p-10 bg-base-200 text-base-content mt-10">
       <aside>
         <p className="text-2xl font-bold text-primary">HabitTracker</p>
         <p>
@@ -28,7 +25,7 @@ const Footer = () => {
         <div className="grid grid-flow-col gap-4">
           <a>
             <svg
-              xmlns="http://www.w3.org/2000/svg"
+              xmlns="http://www.w.org/2000/svg"
               width="24"
               height="24"
               viewBox="0 0 24 24"
