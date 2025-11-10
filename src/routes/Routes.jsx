@@ -7,6 +7,7 @@ import AddHabit from "../pages/AddHabit/AddHabit";
 import PrivateRoute from "./PrivateRoute";
 import MyHabits from "../pages/MyHabits/MyHabits";
 import BrowsePublicHabits from "../pages/BrowsePublicHabits/BrowsePublicHabits";
+import HabitDetails from "../pages/HabitDetails/HabitDetails";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,14 @@ const router = createBrowserRouter([
       {
         path: "/browse-public",
         element: <BrowsePublicHabits />,
+      },
+      {
+        path: "/habit/:id",
+        element: (
+          <PrivateRoute>
+            <HabitDetails />
+          </PrivateRoute>
+        ),
       },
     ],
   },
