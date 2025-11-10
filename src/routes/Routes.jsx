@@ -8,11 +8,13 @@ import PrivateRoute from "./PrivateRoute";
 import MyHabits from "../pages/MyHabits/MyHabits";
 import BrowsePublicHabits from "../pages/BrowsePublicHabits/BrowsePublicHabits";
 import HabitDetails from "../pages/HabitDetails/HabitDetails";
+import ErrorPage from "../pages/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
