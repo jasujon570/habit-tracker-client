@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 
 const Navbar = () => {
   const { user, logOut } = useAuth();
@@ -67,13 +68,15 @@ const Navbar = () => {
       </div>
 
       <div className="navbar-end">
+        <ThemeToggle />
+
         {user ? (
-          <div className="dropdown dropdown-end">
+          <div className="dropdown dropdown-end ml-2">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
                 <img
                   alt="User Avatar"
-                  src={user.photoURL || "https://i.ibb.co.com/HD0RwKtG/Sujon.png"}
+                  src={user.photoURL || "https://i.ibb.co/68J0S2s/avater.png"}
                 />
               </div>
             </label>
@@ -93,14 +96,14 @@ const Navbar = () => {
             </ul>
           </div>
         ) : (
-          <>
+          <div className="ml-2">
             <Link to="/login" className="btn btn-ghost">
               Login
             </Link>
             <Link to="/register" className="btn btn-primary ml-2">
               Sign Up
             </Link>
-          </>
+          </div>
         )}
       </div>
     </div>

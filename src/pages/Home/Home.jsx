@@ -5,6 +5,9 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import slider1 from "../../assets/a.webp"
+import slider2 from "../../assets/2.jpg"
+import slider3 from "../../assets/3.jpeg"
 
 const sliderSettings = {
   dots: true,
@@ -53,8 +56,8 @@ const Home = () => {
       <div className="w-full max-w-6xl mx-auto my-10 p-4">
         <Slider {...sliderSettings}>
           <div className="relative h-[450px] rounded-lg overflow-hidden">
-            <img
-              src="https://i.postimg.cc/3x7M1sjf/a.webp"
+            <img 
+              src={slider1}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
@@ -75,7 +78,7 @@ const Home = () => {
 
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img
-              src="https://i.postimg.cc/sx9mgNBv/2.jpg"
+              src={slider2}
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
@@ -95,7 +98,8 @@ const Home = () => {
 
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img
-              src="https://i.postimg.cc/D0BGDkJr/3.jpg"
+              src={slider3}
+              alt="test"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
