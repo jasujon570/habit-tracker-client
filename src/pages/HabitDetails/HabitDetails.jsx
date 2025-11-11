@@ -5,6 +5,7 @@ import Lottie from "lottie-react";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import successAnimation from "../MyHabits/success.json";
+import useAxios from "../../hooks/useAxios";
 
 const getNormalizedDate = (date) => {
   const d = new Date(date);
@@ -54,13 +55,10 @@ const isCompletedToday = (completionHistory) => {
 
 const calculateProgress = (completionHistory) => {
   if (!completionHistory || completionHistory.length === 0) return 0;
-
   const today = new Date();
   const thirtyDaysAgo = new Date(new Date().setDate(today.getDate() - 30));
-
   const todayNormalized = getNormalizedDate(today).getTime();
   const thirtyDaysAgoNormalized = getNormalizedDate(thirtyDaysAgo).getTime();
-
   const uniqueDatesLast30Days = new Set(
     completionHistory
       .map((entry) => getNormalizedDate(entry.date).getTime())
@@ -68,14 +66,14 @@ const calculateProgress = (completionHistory) => {
         (date) => date >= thirtyDaysAgoNormalized && date <= todayNormalized
       )
   );
-
   const progress = (uniqueDatesLast30Days.size / 30) * 100;
   return Math.round(progress);
 };
 
 const HabitDetails = () => {
-  const { id } = useParams(); // URL থেকে হ্যাবিট ID নেওয়া
+  const { id } = useParams();
   const { user, loading: authLoading } = useAuth();
+  const axios = useAxios();
   const navigate = useNavigate();
 
   const [habit, setHabit] = useState(null);
@@ -83,68 +81,61 @@ const HabitDetails = () => {
 
   const fetchHabitDetails = useCallback(() => {
     setLoading(true);
-    fetch(`http://localhost:5000/habit/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.message === "Habit not found") {
-          setHabit(null);
-        } else {
-          setHabit(data);
-        }
+
+    axios
+      .get(`/habit/${id}`)
+      .then((res) => {
+        setHabit(res.data);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Failed to fetch habit details:", error);
+        if (error.response?.status === 404) {
+          setHabit(null);
+        }
         setLoading(false);
       });
-  }, [id]);
+  }, [id, axios]);
 
   useEffect(() => {
     fetchHabitDetails();
   }, [fetchHabitDetails]);
 
   const handleMarkComplete = (id) => {
-    fetch(`http://localhost:5000/habits/complete/${id}`, {
-      method: "PATCH",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.modifiedCount > 0) {
-          Swal.fire({
-            title: "Great Job!",
-            html: '<div class="h-40">Loading...</div>',
-            timer: 2000,
-            showConfirmButton: false,
-            didOpen: () => {
-              const lottieContainer =
-                Swal.getHtmlContainer().querySelector("div");
-              const lottieInstance = Lottie.render({
-                container: lottieContainer,
-                renderer: "svg",
-                loop: false,
-                autoplay: true,
-                animationData: successAnimation,
-              });
-              lottieContainer.style.height = "auto";
-              lottieContainer.innerHTML = "";
-              lottieContainer.appendChild(lottieInstance.wrapper);
-            },
-          });
+    axios.patch(`/habits/complete/${id}`).then((res) => {
+      if (res.data.modifiedCount > 0) {
+        Swal.fire({
+          title: "Great Job!",
+          html: '<div class="h-40">Loading...</div>',
+          timer: 2000,
+          showConfirmButton: false,
+          didOpen: () => {
+            const lottieContainer =
+              Swal.getHtmlContainer().querySelector("div");
+            const lottieInstance = Lottie.render({
+              container: lottieContainer,
+              renderer: "svg",
+              loop: false,
+              autoplay: true,
+              animationData: successAnimation,
+            });
+            lottieContainer.style.height = "auto";
+            lottieContainer.innerHTML = "";
+            lottieContainer.appendChild(lottieInstance.wrapper);
+          },
+        });
 
-          const updatedHabit = {
-            ...habit,
-            completionHistory: [
-              ...habit.completionHistory,
-              { date: new Date() },
-            ],
-          };
-          setHabit(updatedHabit);
-        } else if (data.message === "Habit already completed today.") {
-          toast("You already completed this today!", { icon: "👏" });
-        } else {
-          toast.error("Could not mark as complete.");
-        }
-      });
+        const updatedHabit = {
+          ...habit,
+          completionHistory: [...habit.completionHistory, { date: new Date() }],
+        };
+        setHabit(updatedHabit);
+      } else if (res.data.message === "Habit already completed today.") {
+        toast("You already completed this today!", { icon: "👏" });
+      } else {
+        toast.error("Could not mark as complete.");
+      }
+    });
   };
 
   if (loading || authLoading) {
@@ -180,24 +171,18 @@ const HabitDetails = () => {
         )}
         <div className="card-body lg:w-1/2">
           <div className="badge badge-primary">{habit.category}</div>
-
           <h1 className="card-title text-4xl font-bold mt-2">{habit.title}</h1>
-
           <p className="py-4">
             {habit.description || "No description provided."}
           </p>
-
           <p className="text-sm text-gray-500">Created by: {habit.userName}</p>
-
           <hr className="my-4" />
-
           <div className="flex justify-between items-center">
             <h3 className="text-lg font-semibold">Current Streak:</h3>
             <div className="badge badge-lg badge-accent font-bold p-4">
               {streak} Days
             </div>
           </div>
-
           <div className="mt-4">
             <label className="label">
               <span className="label-text">Progress (Last 30 Days)</span>
@@ -209,7 +194,6 @@ const HabitDetails = () => {
               max="100"
             ></progress>
           </div>
-
           <div className="card-actions justify-end mt-6">
             <button
               onClick={() => handleMarkComplete(habit._id)}
