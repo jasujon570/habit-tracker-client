@@ -128,7 +128,7 @@ const Login = () => {
             </div>
           </form>
 
-          <div className="divider px-8 text-base-300">OR</div>
+          <div className="divider px-8">OR</div>
 
           <div className="px-8 text-center">
             <button
@@ -139,7 +139,7 @@ const Login = () => {
             </button>
           </div>
 
-          <p className="text-center mb-4 text-base-200">
+          <p className="text-center mb-4">
             New to Habit Tracker?{" "}
             <Link to="/register" className="link link-primary">
               Create an Account

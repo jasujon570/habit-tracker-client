@@ -57,7 +57,7 @@ const Register = () => {
 
   return (
     <div className="hero min-h-screen bg-base-200">
-      <div className="hero-content flex-col lg:flex-row-reverse shadow-2xl bg-white rounded-xl">
+      <div className="hero-content flex-col lg:flex-row-reverse shadow-2xl border border-primary rounded-xl">
         <div className="card w-full lg:w-1/2">
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">
             <h1 className="text-3xl font-bold text-center text-primary mb-4">
@@ -148,11 +148,12 @@ const Register = () => {
                 Register
               </button>
             </div>
+
           </form>
 
-          <p className="text-center mb-4 text-base-100">
+          <p className="text-center mb-4">
             Already have an account?{" "}
-            <Link to="/login" className="link link-primary">
+            <Link to="/login" className="link-primary">
               Login here
             </Link>
           </p>
@@ -168,7 +169,7 @@ const Register = () => {
           <h1 className="text-5xl font-bold text-primary mt-6">
             Start Your Journey!
           </h1>
-          <p className="py-6 text-black">
+          <p className="py-6">
             Track your habits, build consistency, and achieve your goals. Sign
             up to take the first step towards a more productive life.
           </p>

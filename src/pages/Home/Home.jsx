@@ -60,7 +60,7 @@ const Home = () => {
               src={slider1}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
+            <div className="absolute inset-0 bg-black opacity-75 flex items-center justify-center text-center p-4">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   Build Habits, Achieve Goals
@@ -79,9 +79,9 @@ const Home = () => {
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img
               src={slider2}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover z-10"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
+            <div className="absolute inset-0 bg-black opacity-75 flex items-center justify-center text-center p-4">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   See Your Progress
@@ -102,7 +102,7 @@ const Home = () => {
               alt="test"
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-center p-4">
+            <div className="absolute inset-0 bg-black opacity-75 flex items-center justify-center text-center p-4">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   Join the Community

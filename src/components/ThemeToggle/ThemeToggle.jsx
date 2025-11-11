@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 
 const ThemeToggle = () => {
   const [theme, setTheme] = useState(
-    localStorage.getItem("theme") ? localStorage.getItem("theme") : "light"
+    localStorage.getItem("theme") ? localStorage.getItem("theme") : "lemonade"  
   );
 
   const handleToggle = (e) => {
     if (e.target.checked) {
-      setTheme("dark");
+      setTheme("dim");
     } else {
-      setTheme("light");
+      setTheme("lemonade");
     }
   };
 
@@ -24,7 +24,7 @@ const ThemeToggle = () => {
       <input
         type="checkbox"
         onChange={handleToggle}
-        checked={theme === "dark"}
+        checked={theme === "dim"}
       />
 
       <svg

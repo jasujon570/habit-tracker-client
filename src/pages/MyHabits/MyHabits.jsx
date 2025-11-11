@@ -6,45 +6,35 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Lottie from "lottie-react";
 import successAnimation from "./success.json";
+import useAxios from "../../hooks/useAxios";
 
 const getNormalizedDate = (date) => {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
   return d;
 };
-
 const calculateStreak = (completionHistory) => {
-  if (!completionHistory || completionHistory.length === 0) {
-    return 0;
-  }
-
+  if (!completionHistory || completionHistory.length === 0) return 0;
   const uniqueDates = new Set(
     completionHistory.map((entry) => getNormalizedDate(entry.date).getTime())
   );
-
   const sortedDates = Array.from(uniqueDates).sort((a, b) => b - a);
-
   let currentStreak = 0;
   const today = getNormalizedDate(new Date()).getTime();
   const yesterday = getNormalizedDate(
     new Date(today - 24 * 60 * 60 * 1000)
   ).getTime();
-
-  if (sortedDates[0] === today) {
-    currentStreak = 1;
-  } else if (sortedDates[0] === yesterday) {
+  if (sortedDates[0] === today || sortedDates[0] === yesterday) {
     currentStreak = 1;
   } else {
     return 0;
   }
-
   let currentDay = sortedDates[0];
   for (let i = 1; i < sortedDates.length; i++) {
     const nextDay = sortedDates[i];
     const expectedPreviousDay = getNormalizedDate(
       new Date(currentDay - 24 * 60 * 60 * 1000)
     ).getTime();
-
     if (nextDay === expectedPreviousDay) {
       currentStreak++;
       currentDay = nextDay;
@@ -54,20 +44,17 @@ const calculateStreak = (completionHistory) => {
   }
   return currentStreak;
 };
-
 const isCompletedToday = (completionHistory) => {
-  if (!completionHistory || completionHistory.length === 0) {
-    return false;
-  }
+  if (!completionHistory || completionHistory.length === 0) return false;
   const today = getNormalizedDate(new Date()).getTime();
-  return completionHistory.some((entry) => {
-    const entryDate = getNormalizedDate(entry.date).getTime();
-    return entryDate === today;
-  });
+  return completionHistory.some(
+    (entry) => getNormalizedDate(entry.date).getTime() === today
+  );
 };
 
 const MyHabits = () => {
   const { user, loading: authLoading } = useAuth();
+  const axios = useAxios();
   const [myHabits, setMyHabits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedHabit, setSelectedHabit] = useState(null);
@@ -77,17 +64,18 @@ const MyHabits = () => {
   const fetchHabits = useCallback(() => {
     if (authLoading || !user) return;
     setLoading(true);
-    fetch(`http://localhost:5000/habits/${user.email}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setMyHabits(data);
+
+    axios
+      .get(`/habits/${user.email}`)
+      .then((res) => {
+        setMyHabits(res.data);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Failed to fetch user habits:", error);
         setLoading(false);
       });
-  }, [user, authLoading]);
+  }, [user, authLoading, axios]);
 
   useEffect(() => {
     fetchHabits();
@@ -104,14 +92,12 @@ const MyHabits = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        fetch(`http://localhost:5000/habits/${id}`, { method: "DELETE" })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.deletedCount > 0) {
-              Swal.fire("Deleted!", "Your habit has been deleted.", "success");
-              setMyHabits(myHabits.filter((habit) => habit._id !== id));
-            }
-          });
+        axios.delete(`/habits/${id}`).then((res) => {
+          if (res.data.deletedCount > 0) {
+            Swal.fire("Deleted!", "Your habit has been deleted.", "success");
+            setMyHabits(myHabits.filter((habit) => habit._id !== id));
+          }
+        });
       }
     });
   };
@@ -127,14 +113,10 @@ const MyHabits = () => {
   };
 
   const onUpdateSubmit = (data) => {
-    fetch(`http://localhost:5000/habits/${selectedHabit._id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        if (result.modifiedCount > 0) {
+    axios
+      .patch(`/habits/${selectedHabit._id}`, data)
+      .then((res) => {
+        if (res.data.modifiedCount > 0) {
           toast.success("Habit updated successfully!");
           setIsModalOpen(false);
           fetchHabits();
@@ -146,40 +128,35 @@ const MyHabits = () => {
   };
 
   const handleMarkComplete = (id) => {
-    fetch(`http://localhost:5000/habits/complete/${id}`, {
-      method: "PATCH",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.modifiedCount > 0) {
-          Swal.fire({
-            title: "Great Job!",
-            html: '<div class="h-40">Loading...</div>',
-            timer: 2000,
-            showConfirmButton: false,
-            didOpen: () => {
-              const lottieContainer =
-                Swal.getHtmlContainer().querySelector("div");
-              const lottieInstance = Lottie.render({
-                container: lottieContainer,
-                renderer: "svg",
-                loop: false,
-                autoplay: true,
-                animationData: successAnimation,
-              });
-
-              lottieContainer.style.height = "auto";
-              lottieContainer.innerHTML = "";
-              lottieContainer.appendChild(lottieInstance.wrapper);
-            },
-          });
-          fetchHabits();
-        } else if (data.message === "Habit already completed today.") {
-          toast("You already completed this today!", { icon: "👏" });
-        } else {
-          toast.error("Could not mark as complete.");
-        }
-      });
+    axios.patch(`/habits/complete/${id}`).then((res) => {
+      if (res.data.modifiedCount > 0) {
+        Swal.fire({
+          title: "Great Job!",
+          html: '<div class="h-40">Loading...</div>',
+          timer: 2000,
+          showConfirmButton: false,
+          didOpen: () => {
+            const lottieContainer =
+              Swal.getHtmlContainer().querySelector("div");
+            const lottieInstance = Lottie.render({
+              container: lottieContainer,
+              renderer: "svg",
+              loop: false,
+              autoplay: true,
+              animationData: successAnimation,
+            });
+            lottieContainer.style.height = "auto";
+            lottieContainer.innerHTML = "";
+            lottieContainer.appendChild(lottieInstance.wrapper);
+          },
+        });
+        fetchHabits();
+      } else if (res.data.message === "Habit already completed today.") {
+        toast("You already completed this today!", { icon: "👏" });
+      } else {
+        toast.error("Could not mark as complete.");
+      }
+    });
   };
 
   if (loading || authLoading) {
