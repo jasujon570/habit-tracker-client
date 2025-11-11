@@ -1,10 +1,11 @@
+import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import toast from "react-hot-toast";
 import ThemeToggle from "../ThemeToggle/ThemeToggle";
 
 const Navbar = () => {
-  const { user, logOut } = useAuth();
+  const { user, logOut, loading } = useAuth();
 
   const handleLogOut = () => {
     logOut()
@@ -56,7 +57,7 @@ const Navbar = () => {
           </label>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-10 p-2 shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[10] p-2 shadow bg-base-100 rounded-box w-52"
           >
             {navLinks}
           </ul>
@@ -73,7 +74,9 @@ const Navbar = () => {
       <div className="navbar-end">
         <ThemeToggle />
 
-        {user ? (
+        {loading ? (
+          <span className="loading loading-spinner loading-sm ml-4"></span>
+        ) : user ? (
           <div className="dropdown dropdown-end ml-2">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
@@ -85,7 +88,7 @@ const Navbar = () => {
             </label>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-10 p-2 shadow bg-base-100 rounded-box w-52"
+              className="menu menu-sm dropdown-content mt-3 z-[10] p-2 shadow bg-base-100 rounded-box w-52"
             >
               <li className="p-2">
                 <p className="font-semibold">{user.displayName}</p>
