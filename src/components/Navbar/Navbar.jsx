@@ -28,6 +28,9 @@ const Navbar = () => {
       <li>
         <NavLink to="/browse-public">Browse Public Habits</NavLink>
       </li>
+      <li>
+        <NavLink to="/dashboard">Dashboard</NavLink>
+      </li>
     </>
   );
 

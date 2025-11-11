@@ -9,6 +9,7 @@ import MyHabits from "../pages/MyHabits/MyHabits";
 import BrowsePublicHabits from "../pages/BrowsePublicHabits/BrowsePublicHabits";
 import HabitDetails from "../pages/HabitDetails/HabitDetails";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
         element: (
           <PrivateRoute>
             <HabitDetails />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <PrivateRoute>
+            <Dashboard />
           </PrivateRoute>
         ),
       },
