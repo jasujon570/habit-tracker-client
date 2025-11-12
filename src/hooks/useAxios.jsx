@@ -13,15 +13,16 @@ const useAxios = () => {
     const requestInterceptor = axiosInstance.interceptors.request.use(
       async (config) => {
         if (user) {
-          const token = await user.getIdToken(true);
-
-          config.headers.Authorization = `Bearer ${token}`;
+          try {
+            const token = await user.getIdToken(true);
+            config.headers.Authorization = `Bearer ${token}`;
+          } catch (err) {
+            console.error("Failed to get Firebase token:", err);
+          }
         }
         return config;
       },
-      (error) => {
-        return Promise.reject(error);
-      }
+      (error) => Promise.reject(error)
     );
 
     const responseInterceptor = axiosInstance.interceptors.response.use(
@@ -30,8 +31,11 @@ const useAxios = () => {
         if (
           error.response &&
           (error.response.status === 401 || error.response.status === 403)
-        )
-          return Promise.reject(error);
+        ) {
+          console.warn("Unauthorized or forbidden. Logging out...");
+          await logOut();
+        }
+        return Promise.reject(error);
       }
     );
 
