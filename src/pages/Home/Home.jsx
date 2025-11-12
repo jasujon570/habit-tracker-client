@@ -61,9 +61,9 @@ const Home = () => {
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img
               src={slider1}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover bg-black bg-opacity-60"
             />
-            <div className="absolute inset-0 bg-black opacity-80 flex items-center justify-center text-center p-4">
+            <div className="absolute inset-0 flex items-center justify-center text-center p-4">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   Build Habits, Achieve Goals

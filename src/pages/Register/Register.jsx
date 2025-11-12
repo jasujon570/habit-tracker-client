@@ -1,16 +1,14 @@
-// src/pages/Register/Register.jsx
-
-import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import useAxios from "../../hooks/useAxios";
 import registerImage from "../../assets/photo1.svg";
 
 const Register = () => {
   const { createUser, updateUserProfile } = useAuth();
+  const axios = useAxios();
   const navigate = useNavigate();
-
   const {
     register,
     handleSubmit,
@@ -21,7 +19,6 @@ const Register = () => {
     createUser(data.email, data.password)
       .then((result) => {
         console.log(result);
-
         updateUserProfile(data.name, data.photoURL)
           .then(() => {
             const userInfo = {
@@ -30,25 +27,20 @@ const Register = () => {
               photoURL: data.photoURL,
             };
 
-            fetch("http://localhost:5000/users", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(userInfo),
-            })
-              .then((res) => res.json())
+            axios
+              .post("/users", userInfo)
               .then((dbData) => {
                 if (
-                  dbData.insertedId ||
-                  dbData.message === "User already exists"
+                  dbData.data.insertedId ||
+                  dbData.data.message === "User already exists"
                 ) {
                   toast.success("Registration Successful!");
                   navigate("/");
                 }
               })
-              .catch((dbError) => {
-                console.error(dbError);
-                toast.error("Failed to save user to database.");
-              });
+              .catch((dbError) =>
+                toast.error("Failed to save user to database.")
+              );
           })
           .catch((error) => toast.error(error.message));
       })
@@ -57,13 +49,12 @@ const Register = () => {
 
   return (
     <div className="hero min-h-screen bg-base-200">
-      <div className="hero-content flex-col lg:flex-row-reverse shadow-2xl border border-primary rounded-xl">
+      <div className="hero-content flex-col lg:flex-row-reverse shadow-2xl bg-base-100 rounded-xl">
         <div className="card w-full lg:w-1/2">
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">
             <h1 className="text-3xl font-bold text-center text-primary mb-4">
               Create an Account!
             </h1>
-
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Name</span>
@@ -80,7 +71,6 @@ const Register = () => {
                 </span>
               )}
             </div>
-
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Photo URL</span>
@@ -97,7 +87,6 @@ const Register = () => {
                 </span>
               )}
             </div>
-
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Email</span>
@@ -114,7 +103,6 @@ const Register = () => {
                 </span>
               )}
             </div>
-
             <div className="form-control">
               <label className="label">
                 <span className="label-text">Password</span>
@@ -129,7 +117,6 @@ const Register = () => {
                 placeholder="password"
                 className="input input-bordered w-full"
               />
-
               <div className="text-red-600 mt-1 text-xs">
                 {errors.password?.type === "required" && (
                   <span>Password is required</span>
@@ -142,30 +129,25 @@ const Register = () => {
                 )}
               </div>
             </div>
-
             <div className="form-control mt-6">
               <button type="submit" className="btn btn-primary">
                 Register
               </button>
             </div>
-
           </form>
-
           <p className="text-center mb-4">
             Already have an account?{" "}
-            <Link to="/login" className="link-primary">
+            <Link to="/login" className="link link-primary">
               Login here
             </Link>
           </p>
         </div>
-
         <div className="text-center lg:text-left w-full lg:w-1/2 p-8">
           <img
             src={registerImage}
             alt="Habit Building"
             className="w-full max-w-md mx-auto"
           />
-
           <h1 className="text-5xl font-bold text-primary mt-6">
             Start Your Journey!
           </h1>
