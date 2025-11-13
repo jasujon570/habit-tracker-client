@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import lottie from 'lottie-web';
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
-import successAnimation from "../MyHabits/success.json";
+
 import useAxios from "../../hooks/useAxios";
 
 const getNormalizedDate = (date) => {
@@ -12,7 +11,6 @@ const getNormalizedDate = (date) => {
   d.setHours(0, 0, 0, 0);
   return d;
 };
-
 const calculateStreak = (completionHistory) => {
   if (!completionHistory || completionHistory.length === 0) return 0;
   const uniqueDates = new Set(
@@ -44,7 +42,6 @@ const calculateStreak = (completionHistory) => {
   }
   return currentStreak;
 };
-
 const isCompletedToday = (completionHistory) => {
   if (!completionHistory || completionHistory.length === 0) return false;
   const today = getNormalizedDate(new Date()).getTime();
@@ -52,7 +49,6 @@ const isCompletedToday = (completionHistory) => {
     (entry) => getNormalizedDate(entry.date).getTime() === today
   );
 };
-
 const calculateProgress = (completionHistory) => {
   if (!completionHistory || completionHistory.length === 0) return 0;
   const today = new Date();
@@ -81,7 +77,6 @@ const HabitDetails = () => {
 
   const fetchHabitDetails = useCallback(() => {
     setLoading(true);
-
     axios
       .get(`/habit/${id}`)
       .then((res) => {
@@ -106,23 +101,10 @@ const HabitDetails = () => {
       if (res.data.modifiedCount > 0) {
         Swal.fire({
           title: "Great Job!",
-          html: '<div class="h-40">Loading...</div>',
+          text: "You completed this habit for today.",
+          icon: "success",
           timer: 2000,
           showConfirmButton: false,
-          didOpen: () => {
-            const lottieContainer =
-              Swal.getHtmlContainer().querySelector("div");
-            const lottieInstance = lottie.render({
-              container: lottieContainer,
-              renderer: "svg",
-              loop: false,
-              autoplay: true,
-              animationData: successAnimation,
-            });
-            lottieContainer.style.height = "auto";
-            lottieContainer.innerHTML = "";
-            lottieContainer.appendChild(lottieInstance.wrapper);
-          },
         });
 
         const updatedHabit = {
