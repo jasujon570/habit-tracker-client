@@ -3,7 +3,7 @@ import useAuth from "./useAuth";
 import { useEffect } from "react";
 
 const axiosInstance = axios.create({
-  baseURL: "https://my-habit-tracker-server.vercel.app",
+  baseURL: "https://server-ivory-phi.vercel.app",
 });
 
 const useAxios = () => {

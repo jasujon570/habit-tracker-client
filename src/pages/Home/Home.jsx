@@ -1,14 +1,16 @@
-// src/pages/Home/Home.jsx
+
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import useAxios from "../../hooks/useAxios"; 
 
-import slider1 from "../../assets/a.webp"
-import slider2 from "../../assets/2.jpg"
-import slider3 from "../../assets/3.jpeg"
+
+import slider1 from "../../assets/a.webp";
+import slider2 from "../../assets/2.jpg";
+import slider3 from "../../assets/3.jpeg";
 
 
 const sliderSettings = {
@@ -36,34 +38,33 @@ const sectionVariant = {
 const Home = () => {
   const [featuredHabits, setFeaturedHabits] = useState([]);
   const [loading, setLoading] = useState(true);
+  const axios = useAxios();
 
   useEffect(() => {
     setLoading(true);
+
     
-    fetch("http://localhost:5000/habits/featured")
-      .then((res) => res.json())
-      .then((data) => {
-        setFeaturedHabits(data);
+    axios
+      .get("/habits/featured")
+      .then((res) => {
+        setFeaturedHabits(res.data);
         setLoading(false);
       })
       .catch((error) => {
         console.error("Failed to fetch featured habits:", error);
         setLoading(false);
       });
-  }, []);
+  }, [axios]);
 
   return (
     <div>
      
       <div className="w-full max-w-6xl mx-auto my-10 p-4">
         <Slider {...sliderSettings}>
-        
+         
           <div className="relative h-[450px] rounded-lg overflow-hidden">
-            <img
-              src={slider1}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex items-center bg-black opacity-80 justify-center text-center p-4">
+            <img src={slider1} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-end justify-center text-center p-12">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   Build Habits, Achieve Goals
@@ -78,13 +79,10 @@ const Home = () => {
               </div>
             </div>
           </div>
-         
+          
           <div className="relative h-[450px] rounded-lg overflow-hidden">
-            <img
-              src={slider2}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black opacity-80 flex items-center justify-center text-center p-4">
+            <img src={slider2} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-end justify-center text-center p-12">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   See Your Progress
@@ -100,11 +98,8 @@ const Home = () => {
           </div>
           
           <div className="relative h-[450px] rounded-lg overflow-hidden">
-            <img
-              src={slider3}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-black opacity-80 flex items-center justify-center text-center p-4">
+            <img src={slider3} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-end justify-center text-center p-12">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   Join the Community
@@ -121,7 +116,7 @@ const Home = () => {
         </Slider>
       </div>
 
-     
+    
       <motion.div
         className="max-w-6xl mx-auto p-4 my-16"
         variants={sectionVariant}
@@ -172,7 +167,7 @@ const Home = () => {
         )}
       </motion.div>
 
-      
+
       <motion.div
         className="max-w-6xl mx-auto p-4 my-16 bg-base-200 rounded-lg py-10"
         variants={sectionVariant}
@@ -184,7 +179,7 @@ const Home = () => {
           Why Build Habits?
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-         
+        
           <div className="card bg-base-100 shadow-lg p-6">
             <div className="text-primary mx-auto mb-4">
               <svg
@@ -268,7 +263,7 @@ const Home = () => {
         </div>
       </motion.div>
 
-     
+      
       <motion.div
         className="max-w-6xl mx-auto p-4 my-16"
         variants={sectionVariant}
@@ -278,7 +273,7 @@ const Home = () => {
       >
         <h2 className="text-4xl font-bold text-center mb-10">How It Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-       
+          
           <div className="p-6">
             <div className="inline-block p-4 bg-primary text-primary-content rounded-full mb-4">
               <span className="text-3xl font-bold">1</span>
@@ -289,7 +284,7 @@ const Home = () => {
               reminders.
             </p>
           </div>
-       
+          
           <div className="p-6">
             <div className="inline-block p-4 bg-primary text-primary-content rounded-full mb-4">
               <span className="text-3xl font-bold">2</span>
@@ -300,7 +295,7 @@ const Home = () => {
               streak.
             </p>
           </div>
-         
+          
           <div className="p-6">
             <div className="inline-block p-4 bg-primary text-primary-content rounded-full mb-4">
               <span className="text-3xl font-bold">3</span>
@@ -314,7 +309,7 @@ const Home = () => {
         </div>
       </motion.div>
 
-     
+      
       <motion.div
         className="max-w-6xl mx-auto p-4 my-16 bg-base-200 rounded-lg py-10"
         variants={sectionVariant}
@@ -326,7 +321,7 @@ const Home = () => {
           What Our Users Say
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
+         
           <div className="card bg-base-100 p-6 shadow-lg">
             <p className="italic">
               "This tracker changed my life. Seeing my streak grow from 0 to 30
