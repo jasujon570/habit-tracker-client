@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
-import Lottie from "lottie-react";
+import lottie from 'lottie-web';
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import successAnimation from "../MyHabits/success.json";
@@ -112,7 +112,7 @@ const HabitDetails = () => {
           didOpen: () => {
             const lottieContainer =
               Swal.getHtmlContainer().querySelector("div");
-            const lottieInstance = Lottie.render({
+            const lottieInstance = lottie.render({
               container: lottieContainer,
               renderer: "svg",
               loop: false,

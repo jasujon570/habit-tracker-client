@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import Lottie from "lottie-react";
+import lottie from 'lottie-web';
 import successAnimation from "./success.json";
 import useAxios from "../../hooks/useAxios";
 
@@ -138,7 +138,7 @@ const MyHabits = () => {
           didOpen: () => {
             const lottieContainer =
               Swal.getHtmlContainer().querySelector("div");
-            const lottieInstance = Lottie.render({
+            const lottieInstance = lottie.render({
               container: lottieContainer,
               renderer: "svg",
               loop: false,
