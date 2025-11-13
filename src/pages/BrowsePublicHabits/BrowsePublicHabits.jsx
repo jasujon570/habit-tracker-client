@@ -1,44 +1,51 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
+import useAxios from "../../hooks/useAxios"; 
 
 const BrowsePublicHabits = () => {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
+  const axios = useAxios();
 
-  const fetchPublicHabits = useCallback((url) => {
-    setLoading(true);
-    fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        setHabits(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch public habits:", error);
-        setLoading(false);
-      });
-  }, []);
+
+  const fetchPublicHabits = useCallback(
+    (url) => {
+      setLoading(true);
+      axios
+        .get(url)
+        .then((res) => {
+          setHabits(res.data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch public habits:", error);
+          setLoading(false);
+        });
+    },
+    [axios]
+  );
 
   useEffect(() => {
-    const initialUrl = "http://localhost:5000/habits";
-    fetchPublicHabits(initialUrl);
+    fetchPublicHabits("/habits");
   }, [fetchPublicHabits]);
+
 
   const handleFilterSubmit = (e) => {
     e.preventDefault();
 
-    const url = new URL("http://localhost:5000/habits");
+
+    const params = new URLSearchParams();
     if (category) {
-      url.searchParams.append("category", category);
+      params.append("category", category);
     }
     if (searchTerm) {
-      url.searchParams.append("search", searchTerm);
+      params.append("search", searchTerm);
     }
 
-    fetchPublicHabits(url.toString());
+   
+    fetchPublicHabits(`/habits?${params.toString()}`);
   };
 
   return (
@@ -47,6 +54,7 @@ const BrowsePublicHabits = () => {
         Browse Public Habits
       </h1>
 
+   
       <form
         onSubmit={handleFilterSubmit}
         className="flex flex-col md:flex-row gap-4 mb-8 p-4 bg-base-200 rounded-lg shadow"
@@ -60,7 +68,6 @@ const BrowsePublicHabits = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
         <div className="form-control w-full md:w-64">
           <select
             className="select select-bordered"
@@ -75,7 +82,6 @@ const BrowsePublicHabits = () => {
             <option value="Study">Study</option>
           </select>
         </div>
-
         <button type="submit" className="btn btn-primary">
           Filter
         </button>

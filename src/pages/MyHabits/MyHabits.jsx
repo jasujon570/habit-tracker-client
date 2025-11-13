@@ -4,9 +4,8 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import lottie from 'lottie-web';
-import successAnimation from "./success.json";
 import useAxios from "../../hooks/useAxios";
+
 
 const getNormalizedDate = (date) => {
   const d = new Date(date);
@@ -52,6 +51,7 @@ const isCompletedToday = (completionHistory) => {
   );
 };
 
+
 const MyHabits = () => {
   const { user, loading: authLoading } = useAuth();
   const axios = useAxios();
@@ -64,7 +64,6 @@ const MyHabits = () => {
   const fetchHabits = useCallback(() => {
     if (authLoading || !user) return;
     setLoading(true);
-
     axios
       .get(`/habits/${user.email}`)
       .then((res) => {
@@ -132,23 +131,10 @@ const MyHabits = () => {
       if (res.data.modifiedCount > 0) {
         Swal.fire({
           title: "Great Job!",
-          html: '<div class="h-40">Loading...</div>',
+          text: "You completed this habit for today.",
+          icon: "success",
           timer: 2000,
           showConfirmButton: false,
-          didOpen: () => {
-            const lottieContainer =
-              Swal.getHtmlContainer().querySelector("div");
-            const lottieInstance = lottie.render({
-              container: lottieContainer,
-              renderer: "svg",
-              loop: false,
-              autoplay: true,
-              animationData: successAnimation,
-            });
-            lottieContainer.style.height = "auto";
-            lottieContainer.innerHTML = "";
-            lottieContainer.appendChild(lottieInstance.wrapper);
-          },
         });
         fetchHabits();
       } else if (res.data.message === "Habit already completed today.") {
@@ -178,11 +164,9 @@ const MyHabits = () => {
       </div>
     );
   }
-
   return (
     <div className="max-w-6xl mx-auto p-4 my-10">
       <h1 className="text-4xl font-bold text-center mb-10">My Habits</h1>
-
       <div className="overflow-x-auto shadow-lg rounded-lg">
         <table className="table w-full">
           <thead className="bg-base-200">
@@ -199,7 +183,6 @@ const MyHabits = () => {
             {myHabits.map((habit, index) => {
               const streak = calculateStreak(habit.completionHistory);
               const completedToday = isCompletedToday(habit.completionHistory);
-
               return (
                 <tr key={habit._id} className="hover">
                   <th>{index + 1}</th>
@@ -238,7 +221,7 @@ const MyHabits = () => {
           </tbody>
         </table>
       </div>
-
+     
       {isModalOpen && (
         <dialog open className="modal modal-open">
           <div className="modal-box w-11/12 max-w-3xl">
