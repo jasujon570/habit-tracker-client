@@ -64,7 +64,7 @@ const Home = () => {
          
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img src={slider1} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-end justify-center text-center p-12">
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-center justify-center text-center p-12">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   Build Habits, Achieve Goals
@@ -82,7 +82,7 @@ const Home = () => {
           
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img src={slider2} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-end justify-center text-center p-12">
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-center justify-center text-center p-12">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   See Your Progress
@@ -99,7 +99,7 @@ const Home = () => {
           
           <div className="relative h-[450px] rounded-lg overflow-hidden">
             <img src={slider3} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-end justify-center text-center p-12">
+            <div className="absolute inset-0 bg-linear-to-t from-black/70 to-transparent flex items-center justify-center text-center p-12">
               <div>
                 <h1 className="text-4xl font-bold text-white mb-4">
                   Join the Community
